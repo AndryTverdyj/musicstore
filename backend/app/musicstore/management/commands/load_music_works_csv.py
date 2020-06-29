@@ -41,7 +41,6 @@ class Command(BaseCommand):
         self.stdout.write("check_without_iswc is started")
         if res:
             work_object = MusicWork.objects.filter(
-                iswc = None,
                 title = data.get('title'),
                 contributors__contains = data.get('contributors').split('|')
             ).first()
