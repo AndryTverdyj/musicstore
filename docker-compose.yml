@@ -1,0 +1,57 @@
+version: '2.0'
+
+services:
+  frontend:
+    build: ./frontend
+    env_file:
+      - .env/dev
+    volumes:
+      - ./frontend/front_app:/front_app
+    networks:
+      - mnet
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    restart: always
+    env_file:
+      - .env/dev
+    networks:
+      - mnet
+    volumes:
+      - ./backend/app/app/static:/code/app/static
+      - ./backend/app/app/static-root:/code/app/static-root
+      - ./backend/app/app/media:/code/app/media
+      - ./backend/app/musicstore/migrations:/code/musicstore/migrations
+
+  db:
+    image: 'postgres'
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env/dev
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    networks:
+      - mnet
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - .conf/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/front_app/dist:/frontend
+      - ./frontend/front_app/dist/static:/frontend/static
+      - ./backend/app/app/static-root:/backend/static
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - mnet
+
+networks:
+  mnet:
+    driver: bridge
