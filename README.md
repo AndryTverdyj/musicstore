@@ -1,7 +1,7 @@
 # The Music store project.
 ==========================
 
-Simple storage to help store? search and manage Music works.
+Simple storage to help store, search and manage Music works.
 
 1 Installation
 ---------------
